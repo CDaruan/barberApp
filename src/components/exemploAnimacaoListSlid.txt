@@ -1,0 +1,75 @@
+import React, { useRef } from "react";
+import { Animated,TouchableOpacity, View, StyleSheet, PanResponder, Text } from "react-native";
+import { Dimensions } from "react-native";
+var mudou = 0;
+const App = () => {
+  const pan = useRef(new Animated.ValueXY()).current;
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderMove: Animated.event([
+        null,
+        { dx: pan.x }
+      ]),
+      onPanResponderRelease: () => {
+        mudou = !mudou;
+        if (mudou) Animated.spring(pan, { toValue: { x: (JSON.stringify(pan.x)<0)?-90:90, y: 0 } }).start();
+        else Animated.spring(pan, { toValue: { x:0, y: 0 } }).start();
+        
+      }
+    })
+  ).current;
+
+  return (
+  
+    <View style={styles.container} >
+      <Text style={styles.titleText}>Drag & Release 99this box! {(pan.x)?JSON.stringify(pan.x):7} </Text>
+      <Animated.View
+        style={{
+          transform: [{ translateX: pan.x }, { translateY: pan.y }]
+        }}
+        {...panResponder.panHandlers}
+      >
+        <View style={styles.bigBox}>
+        <TouchableOpacity style={styles.box1}>
+        </TouchableOpacity>
+        <View style={styles.box}>
+        </View>
+        <View style={styles.box1}>
+        </View>
+        
+        </View>
+      </Animated.View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  titleText: {
+    fontSize: 14,
+    lineHeight: 24,
+    fontWeight: "bold"
+  },
+  bigBox:{
+    flexDirection:"row"
+  },
+  box: {
+    height: 150,
+    width:Dimensions.get('window').width,
+    backgroundColor: "blue",
+    borderRadius: 5
+  },
+  box1: {
+    height: 150,
+    width:Dimensions.get('window').width*0.80,
+    backgroundColor: "red",
+    borderRadius: 5
+  }
+});
+
+export default App;

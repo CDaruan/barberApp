@@ -1,0 +1,1 @@
+import { createaAppContainer, createSwitchNavigator } from 'react-navigation'
